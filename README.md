@@ -39,7 +39,7 @@ Want to run it yourself? It’s lightweight and simple.
 
 ### 1. Clone this repository
 ```bash
-git clone https://github.com/your-username/no-as-service.git
+git clone https://github.com/hotheadhacker/no-as-service.git
 cd no-as-service
 ```
 
