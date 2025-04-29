@@ -1,5 +1,10 @@
 # ❌ No-as-a-Service
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hotheadhacker/no-as-a-service/main/assets/imgs/naas.jpg" width="800" alt="No-as-a-Service Banner"/>
+</p>
+
+
 Ever needed a graceful way to say “no”?  
 This tiny API returns random, generic, creative, and sometimes hilarious rejection reasons — perfectly suited for any scenario: personal, professional, student life, dev life, or just because.
 
