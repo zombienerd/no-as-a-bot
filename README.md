@@ -16,7 +16,7 @@ Built for humans, excuses, and humor.
 
 **Base URL**
 ```
-https://your-domain.com/no
+https://naas.isalman.dev/no
 ```
 
 **Method:** `GET`  
