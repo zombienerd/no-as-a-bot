@@ -1,4 +1,112 @@
-# no-as-a-service
+# ❌ No-as-a-Service
 
-No-as-a-Service (NAAS) is a simple API that returns a random rejection reason.
-Use it when you need a realistic excuse, a fun “no,” or want to simulate being turned down in style.
+Ever needed a graceful way to say “no”?  
+This tiny API returns random, generic, creative, and sometimes hilarious rejection reasons — perfectly suited for any scenario: personal, professional, student life, dev life, or just because.
+
+Built for humans, excuses, and humor.
+
+---
+
+## 🚀 API Usage
+
+**Base URL**
+```
+https://your-domain.com/no
+```
+
+**Method:** `GET`  
+**Rate Limit:** `10 requests per minute per IP`
+
+### 🔄 Example Request
+```http
+GET /no
+```
+
+### ✅ Example Response
+```json
+{
+  "reason": "This feels like something Future Me would yell at Present Me for agreeing to."
+}
+```
+
+Use it in apps, bots, landing pages, Slack integrations, rejection letters, or wherever you need a polite (or witty) no.
+
+---
+
+## 🛠️ Self-Hosting
+
+Want to run it yourself? It’s lightweight and simple.
+
+### 1. Clone this repository
+```bash
+git clone https://github.com/your-username/no-as-service.git
+cd no-as-service
+```
+
+### 2. Install dependencies
+```bash
+npm install
+```
+
+### 3. Start the server
+```bash
+npm start
+```
+
+The API will be live at:
+```
+http://localhost:3000/no
+```
+
+You can also change the port using an environment variable:
+```bash
+PORT=5000 npm start
+```
+
+---
+
+## 📁 Project Structure
+
+```
+no-as-service/
+├── index.js            # Express API
+├── reasons.json        # 1000+ universal rejection reasons
+├── package.json
+└── README.md
+```
+
+---
+
+## 📦 package.json
+
+For reference, here’s the package config:
+
+```json
+{
+  "name": "no-as-service",
+  "version": "1.0.0",
+  "description": "A lightweight API that returns random rejection or no reasons.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "hotheadhacker",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.0.0"
+  }
+}
+```
+
+---
+
+## 👤 Author
+
+Created with creative stubbornness by [hotheadhacker](https://github.com/hotheadhacker)
+
+---
+
+## 📄 License
+
+MIT — do whatever, just don’t say yes when you should say no.
