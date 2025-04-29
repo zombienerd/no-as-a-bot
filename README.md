@@ -40,7 +40,7 @@ Want to run it yourself? It’s lightweight and simple.
 ### 1. Clone this repository
 ```bash
 git clone https://github.com/hotheadhacker/no-as-a-service.git
-cd no-as-service
+cd no-as-a-service
 ```
 
 ### 2. Install dependencies
