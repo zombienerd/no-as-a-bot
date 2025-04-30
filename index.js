@@ -9,13 +9,13 @@ const PORT = process.env.PORT || 3000;
 const reasons = JSON.parse(fs.readFileSync('./reasons.json', 'utf-8'));
 
 // Rate limiter: 10 requests per minute per IP
-const limiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 10,
-  message: { error: "Too many requests, please try again later." }
-});
+// const limiter = rateLimit({
+//   windowMs: 60 * 1000, // 1 minute
+//   max: 10,
+//   message: { error: "Too many requests, please try again later." }
+// });
 
-app.use(limiter);
+// app.use(limiter);
 
 // Random rejection reason endpoint
 app.get('/no', (req, res) => {
