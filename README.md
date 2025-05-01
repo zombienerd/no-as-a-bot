@@ -10,6 +10,18 @@ This tiny API returns random, generic, creative, and sometimes hilarious rejecti
 
 Built for humans, excuses, and humor.
 
+<!-- GitAds Sponsorship Badge -->
+<p align="center">
+  <a href="https://gitads.dev/">
+    <img src="https://gitads.dev/assets/images/sponsor/camos/camo-3.png" alt="Sponsored by GitAds" />
+  </a>
+</p>
+
+<p align="center">
+  This project is <strong>sponsored by <a href="https://gitads.dev/publisher/login">GitAds</a></strong>.<br>
+  You can get your GitHub repository sponsored too — <a href="https://gitads.dev/publisher/login">create your account now</a>.
+</p>
+
 ---
 
 ## 🚀 API Usage
