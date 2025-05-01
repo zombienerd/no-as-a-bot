@@ -20,7 +20,7 @@ https://naas.isalman.dev/no
 ```
 
 **Method:** `GET`  
-**Rate Limit:** `10 requests per minute per IP`
+**Rate Limit:** `120 requests per minute per IP`
 
 ### 🔄 Example Request
 ```http
