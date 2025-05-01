@@ -18,8 +18,8 @@ Built for humans, excuses, and humor.
 </p>
 
 <p align="center">
-  This project is <strong>sponsored by <a href="https://gitads.dev/publisher/register">GitAds</a></strong>.<br>
-  You can get your GitHub repository sponsored too — <a href="https://gitads.dev/publisher/register">create your account now</a>.
+  This project is <strong>sponsored by <a href="https://docs.gitads.dev/docs/getting-started/publishers">GitAds</a></strong>.<br>
+  You can get your GitHub repository sponsored too — <a href="https://docs.gitads.dev/docs/getting-started/publishers>create your account now</a>.
 </p>
 
 ---
