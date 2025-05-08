@@ -89,6 +89,7 @@ no-as-service/
 ├── index.js            # Express API
 ├── reasons.json        # 1000+ universal rejection reasons
 ├── package.json
+├── .devcontainer.json  # VS Code / Github devcontainer setup
 └── README.md
 ```
 
@@ -117,6 +118,10 @@ For reference, here’s the package config:
 ```
 
 ---
+
+## ⚓ Devcontainer
+
+If you open this repo in Github Codespaces, it will automatically use `.devcontainer.json` to set up your environment.  If you open it in VSCode, it will ask you if you want to reopen it in a container.
 
 ## 👤 Author
 
