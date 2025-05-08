@@ -142,7 +142,7 @@ Here are some projects and websites that creatively integrate [no-as-a-service](
 
 ---
 
-Want to use no-as-a-service in your own project? Check out the usage section in this README and start returning **"no"** like a pro.
+> Want to use no-as-a-service in your own project? Check out the usage section in this README and start returning **"no"** like a pro.
 ---
 
 ## 👤 Author
