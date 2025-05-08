@@ -126,7 +126,7 @@ If you open this repo in Github Codespaces, it will automatically use `.devconta
 ---
 ## Projects Using No-as-a-Service
 
-Here are some projects and websites that creatively integrate [no-as-a-service](https://no-as-a-service.vercel.app) to deliver humorous or programmatic "no" responses:
+Here are some projects and websites that creatively integrate [no-as-a-service](https://naas.isalman.dev/no) to deliver humorous or programmatic "no" responses:
 
 1. **[no-as-a-service-rust](https://github.com/ZAZPRO/no-as-a-service-rust)**  
    Rust implementation of this project.
