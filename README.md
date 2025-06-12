@@ -140,6 +140,10 @@ Here are some projects and websites that creatively integrate [no-as-a-service](
 4. **[Gerador de Frases Aleatórias (pt-BR)](https://github.com/timeuz/frases-aleatorias)**
    Uma reinterpretação em Python com frases em português, frontend e novas categorias.
 
+
+5. **[Your Project Here?](https://github.com/YOUR_REPO)**  
+   If you're using no-as-a-service in your project, open a pull request to be featured here!
+
 ---
 
 > Want to use no-as-a-service in your own project? Check out the usage section in this README and start returning **"no"** like a pro.
