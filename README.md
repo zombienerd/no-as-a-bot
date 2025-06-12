@@ -137,8 +137,8 @@ Here are some projects and websites that creatively integrate [no-as-a-service](
 3. **[FunnyAnswers - /no endpoint](https://www.funnyanswers.lol/no)**  
    A humor-focused API playground that includes a mirror or wrapper for no-as-a-service, perfect for developers exploring fun HTTP-based responses.
 
-4. **[Your Project Here?](https://github.com/YOUR_REPO)**  
-   If you're using no-as-a-service in your project, open a pull request to be featured here!
+4. **[Gerador de Frases Aleatórias (pt-BR)](https://github.com/timeuz/frases-aleatorias)**
+   Uma reinterpretação em Python com frases em português, frontend e novas categorias.
 
 ---
 
