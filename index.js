@@ -84,7 +84,7 @@ client.on(Events.InteractionCreate, async interaction => {
       if (!webhook) {
         webhook = await channel.createWebhook({
           name: 'NoBot Webhook',
-          avatar: client.member.displayAvatarURL(),
+          avatar: client.user.displayAvatarURL(),
         });
         console.log(`Created webhook in ${guild.name} / #${channel.name}`);
       }
@@ -98,18 +98,24 @@ client.on(Events.InteractionCreate, async interaction => {
     // Pick a reason
     const reason = reasons[Math.floor(Math.random() * reasons.length)];
 
+    // Choose the appropriate avatar URL
+    const avatarURL = interaction.member?.avatar
+      ? interaction.member.displayAvatarURL()
+      : interaction.user.displayAvatarURL();
+
     // Post as user
     await webhook.send({
       content: reason,
       username: interaction.member?.displayName || interaction.user.username,
-      avatarURL: interaction.member?.displayAvatarURL(),
+      avatarURL
     });
 
+    // Defer and reply with modern flags usage
     await interaction.deferReply({ ephemeral: true });
     await interaction.editReply('✅ Rejection delivered.');
 
   } catch (err) {
-    console.error(`Error handling /no in ${guild.name} / #${channel.name}:`, err);
+    console.error(`Error handling /no in ${guild?.name || 'DMs'} / #${channel?.name || 'unknown'}:`, err);
     await interaction.reply({ content: '❌ Could not deliver the rejection. Check bot permissions.', ephemeral: true });
   }
 });
