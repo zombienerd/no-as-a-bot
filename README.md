@@ -18,7 +18,7 @@ Want to run it yourself? It’s lightweight and simple.
 ### 1. Clone this repository
 ```bash
 git clone https://github.com/zombienerd/no-as-a-bot.git
-cd no-as-a-service
+cd no-as-a-bot
 ```
 
 ### 2. Install dependencies
