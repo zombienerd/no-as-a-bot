@@ -102,7 +102,7 @@ client.on(Events.InteractionCreate, async interaction => {
     await webhook.send({
       content: reason,
       username: interaction.member?.displayName || interaction.user.username,
-      avatarURL: interaction.user.displayAvatarURL(),
+      avatarURL: interaction.member?.displayAvatarURL(),
     });
 
     await interaction.deferReply({ ephemeral: true });
