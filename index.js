@@ -1,8 +1,10 @@
 const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, Events } = require('discord.js');
 const fs = require('fs');
+const path = require('path');
 const { token, clientId } = require('./config.json');
 
 const reasons = JSON.parse(fs.readFileSync('./reasons.json', 'utf-8'));
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -10,7 +12,7 @@ const client = new Client({
   ]
 });
 
-// Register slash command globally
+// Command registration
 const commands = [
   new SlashCommandBuilder()
     .setName('no')
@@ -21,16 +23,39 @@ const commands = [
 const rest = new REST({ version: '10' }).setToken(token);
 (async () => {
   try {
-    console.log('Registering slash commands...');
     await rest.put(Routes.applicationCommands(clientId), { body: commands });
-    console.log('Commands registered.');
+    console.log('Slash commands registered.');
   } catch (err) {
     console.error('Command registration failed:', err);
   }
 })();
 
-// Cache: channelId -> webhook
-const webhookCache = new Map();
+// Persistent webhook cache
+const CACHE_FILE = path.join(__dirname, 'webhooks.json');
+let webhookCache = new Map();
+
+// Load webhook cache from file
+function loadCache() {
+  try {
+    if (fs.existsSync(CACHE_FILE)) {
+      const data = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf-8'));
+      for (const [channelId, webhookData] of Object.entries(data)) {
+        webhookCache.set(channelId, webhookData);
+      }
+      console.log('Webhook cache loaded.');
+    }
+  } catch (err) {
+    console.warn('Could not load cache:', err);
+  }
+}
+
+// Save webhook cache to file
+function saveCache() {
+  const data = Object.fromEntries(webhookCache);
+  fs.writeFileSync(CACHE_FILE, JSON.stringify(data, null, 2));
+}
+
+loadCache();
 
 client.once(Events.ClientReady, () => {
   console.log(`Logged in as ${client.user.tag}`);
@@ -42,27 +67,38 @@ client.on(Events.InteractionCreate, async interaction => {
 
   const channel = interaction.channel;
   const channelId = channel.id;
+  const guild = interaction.guild;
 
-  // Get or create webhook for the current channel
-  let webhook = webhookCache.get(channelId);
+  let webhookData = webhookCache.get(channelId);
+  let webhook;
+
   try {
-    if (!webhook) {
+    if (webhookData) {
+      // Reconstruct the webhook
+      webhook = await client.fetchWebhook(webhookData.id, webhookData.token);
+    } else {
+      // Create or reuse an existing one in this channel
       const webhooks = await channel.fetchWebhooks();
       webhook = webhooks.find(wh => wh.owner?.id === client.user.id);
+
       if (!webhook) {
         webhook = await channel.createWebhook({
           name: 'NoBot Webhook',
-          avatar: client.user.displayAvatarURL()
+          avatar: client.user.displayAvatarURL(),
         });
-        console.log(`Created webhook in ${channel.guild.name} / #${channel.name}`);
+        console.log(`Created webhook in ${guild.name} / #${channel.name}`);
       }
-      webhookCache.set(channelId, webhook);
+
+      // Save to cache
+      webhookData = { id: webhook.id, token: webhook.token };
+      webhookCache.set(channelId, webhookData);
+      saveCache();
     }
 
-    // Get random reason
+    // Pick a reason
     const reason = reasons[Math.floor(Math.random() * reasons.length)];
 
-    // Send message via webhook "as user"
+    // Post as user
     await webhook.send({
       content: reason,
       username: interaction.member?.displayName || interaction.user.username,
@@ -70,11 +106,11 @@ client.on(Events.InteractionCreate, async interaction => {
     });
 
     await interaction.deferReply({ ephemeral: true });
-    await interaction.editReply('Rejection delivered.');
+    await interaction.editReply('✅ Rejection delivered.');
 
   } catch (err) {
-    console.error(`Error handling /no in ${channel.guild.name} / #${channel.name}:`, err);
-    await interaction.reply({ content: '❌ Failed to send rejection. Please check permissions.', ephemeral: true });
+    console.error(`Error handling /no in ${guild.name} / #${channel.name}:`, err);
+    await interaction.reply({ content: '❌ Could not deliver the rejection. Check bot permissions.', ephemeral: true });
   }
 });
 
