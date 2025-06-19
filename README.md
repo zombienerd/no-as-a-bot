@@ -25,8 +25,10 @@ cd no-as-a-bot
 ```bash
 npm install
 ```
+### 3. Edit config.json
+Insert your Bot Token and ID
 
-### 3. Start the server
+### 4. Start the server
 ```bash
 npm start
 ```
@@ -34,20 +36,15 @@ npm start
 ## 📁 Project Structure
 
 ```
-no-as-service/
-├── index.js            # Express API
-├── reasons.json        # 1000+ universal rejection reasons
-├── package.json
-├── .devcontainer.json  # VS Code / Github devcontainer setup
-└── README.md
+no-bot/
+├── index.js  //Main file
+├── config.json  //Config for Bot Token & ID
+├── reasons.json //List of Rejection Reasons
+├── webhooks.json //File for webhooks to be saved and referenced
+├── package.json  //Package Info
 ```
 
 ---
-
-## 📦 package.json
-
-For reference, here’s the package config:
-
 
 
 ## 👤 Authors
