@@ -9,7 +9,7 @@ Ever needed a graceful way to say “no”?
 This tiny Bot returns random, generic, creative, and sometimes hilarious rejection reasons — perfectly suited for any scenario: personal, professional, student life, dev life, or just because.  Just use /no in the channel the bot has access to.
 
 Built for humans, excuses, and humor.
-
+/Yes and /Maybe commands now added by popular demand.
 
 ## 🛠️ Self-Hosting
 
