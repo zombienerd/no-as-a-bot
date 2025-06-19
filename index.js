@@ -1,33 +1,81 @@
-const express = require('express');
-const rateLimit = require('express-rate-limit');
+const { Client, GatewayIntentBits, REST, Routes, SlashCommandBuilder, Events } = require('discord.js');
 const fs = require('fs');
+const { token, clientId } = require('./config.json');
 
-const app = express();
-app.set('trust proxy', true);
-const PORT = process.env.PORT || 3000;
-
-// Load reasons from JSON
 const reasons = JSON.parse(fs.readFileSync('./reasons.json', 'utf-8'));
-
-// Rate limiter: 120 requests per minute per IP
-const limiter = rateLimit({
-  windowMs: 60 * 1000, // 1 minute
-  max: 120,
-  keyGenerator: (req, res) => {
-    return req.headers['cf-connecting-ip'] || req.ip; // Fallback if header missing (or for non-CF)
-  },
-  message: { error: "Too many requests, please try again later. (120 reqs/min/IP)" }
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages
+  ]
 });
 
-app.use(limiter);
+// Register slash command globally
+const commands = [
+  new SlashCommandBuilder()
+    .setName('no')
+    .setDescription('Drop a random rejection reason.')
+    .toJSON()
+];
 
-// Random rejection reason endpoint
-app.get('/no', (req, res) => {
-  const reason = reasons[Math.floor(Math.random() * reasons.length)];
-  res.json({ reason });
+const rest = new REST({ version: '10' }).setToken(token);
+(async () => {
+  try {
+    console.log('Registering slash commands...');
+    await rest.put(Routes.applicationCommands(clientId), { body: commands });
+    console.log('Commands registered.');
+  } catch (err) {
+    console.error('Command registration failed:', err);
+  }
+})();
+
+// Cache: channelId -> webhook
+const webhookCache = new Map();
+
+client.once(Events.ClientReady, () => {
+  console.log(`Logged in as ${client.user.tag}`);
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`No-as-a-Service is running on port ${PORT}`);
+client.on(Events.InteractionCreate, async interaction => {
+  if (!interaction.isChatInputCommand()) return;
+  if (interaction.commandName !== 'no') return;
+
+  const channel = interaction.channel;
+  const channelId = channel.id;
+
+  // Get or create webhook for the current channel
+  let webhook = webhookCache.get(channelId);
+  try {
+    if (!webhook) {
+      const webhooks = await channel.fetchWebhooks();
+      webhook = webhooks.find(wh => wh.owner?.id === client.user.id);
+      if (!webhook) {
+        webhook = await channel.createWebhook({
+          name: 'NoBot Webhook',
+          avatar: client.user.displayAvatarURL()
+        });
+        console.log(`Created webhook in ${channel.guild.name} / #${channel.name}`);
+      }
+      webhookCache.set(channelId, webhook);
+    }
+
+    // Get random reason
+    const reason = reasons[Math.floor(Math.random() * reasons.length)];
+
+    // Send message via webhook "as user"
+    await webhook.send({
+      content: reason,
+      username: interaction.member?.displayName || interaction.user.username,
+      avatarURL: interaction.user.displayAvatarURL(),
+    });
+
+    await interaction.deferReply({ ephemeral: true });
+    await interaction.editReply('Rejection delivered.');
+
+  } catch (err) {
+    console.error(`Error handling /no in ${channel.guild.name} / #${channel.name}:`, err);
+    await interaction.reply({ content: '❌ Failed to send rejection. Please check permissions.', ephemeral: true });
+  }
 });
+
+client.login(token);
