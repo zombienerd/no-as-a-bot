@@ -84,7 +84,7 @@ client.on(Events.InteractionCreate, async interaction => {
       if (!webhook) {
         webhook = await channel.createWebhook({
           name: 'NoBot Webhook',
-          avatar: client.user.displayAvatarURL(),
+          avatar: client.member.displayAvatarURL(),
         });
         console.log(`Created webhook in ${guild.name} / #${channel.name}`);
       }
