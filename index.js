@@ -3,7 +3,10 @@ const fs = require('fs');
 const path = require('path');
 const { token, clientId } = require('./config.json');
 
-const reasons = JSON.parse(fs.readFileSync('./reasons.json', 'utf-8'));
+// Load all reason files
+const noReasons = JSON.parse(fs.readFileSync('./reasons.json', 'utf-8'));
+const yesReasons = JSON.parse(fs.readFileSync('./yesreasons.json', 'utf-8'));
+const maybeReasons = JSON.parse(fs.readFileSync('./maybereasons.json', 'utf-8'));
 
 const client = new Client({
   intents: [
@@ -12,13 +15,12 @@ const client = new Client({
   ]
 });
 
-// Command registration
+// Register slash commands
 const commands = [
-  new SlashCommandBuilder()
-    .setName('no')
-    .setDescription('Drop a random rejection reason.')
-    .toJSON()
-];
+  new SlashCommandBuilder().setName('no').setDescription('Drop a random rejection reason.'),
+  new SlashCommandBuilder().setName('yes').setDescription('Drop a random affirmation.'),
+  new SlashCommandBuilder().setName('maybe').setDescription('Drop a random ambiguous maybe.'),
+].map(cmd => cmd.toJSON());
 
 const rest = new REST({ version: '10' }).setToken(token);
 (async () => {
@@ -34,7 +36,6 @@ const rest = new REST({ version: '10' }).setToken(token);
 const CACHE_FILE = path.join(__dirname, 'webhooks.json');
 let webhookCache = new Map();
 
-// Load webhook cache from file
 function loadCache() {
   try {
     if (fs.existsSync(CACHE_FILE)) {
@@ -49,7 +50,6 @@ function loadCache() {
   }
 }
 
-// Save webhook cache to file
 function saveCache() {
   const data = Object.fromEntries(webhookCache);
   fs.writeFileSync(CACHE_FILE, JSON.stringify(data, null, 2));
@@ -63,21 +63,34 @@ client.once(Events.ClientReady, () => {
 
 client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return;
-  if (interaction.commandName !== 'no') return;
-
   const channel = interaction.channel;
   const channelId = channel.id;
   const guild = interaction.guild;
+
+  const commandName = interaction.commandName;
+  let pool;
+
+  switch (commandName) {
+    case 'no':
+      pool = noReasons;
+      break;
+    case 'yes':
+      pool = yesReasons;
+      break;
+    case 'maybe':
+      pool = maybeReasons;
+      break;
+    default:
+      return;
+  }
 
   let webhookData = webhookCache.get(channelId);
   let webhook;
 
   try {
     if (webhookData) {
-      // Reconstruct the webhook
       webhook = await client.fetchWebhook(webhookData.id, webhookData.token);
     } else {
-      // Create or reuse an existing one in this channel
       const webhooks = await channel.fetchWebhooks();
       webhook = webhooks.find(wh => wh.owner?.id === client.user.id);
 
@@ -89,34 +102,29 @@ client.on(Events.InteractionCreate, async interaction => {
         console.log(`Created webhook in ${guild.name} / #${channel.name}`);
       }
 
-      // Save to cache
       webhookData = { id: webhook.id, token: webhook.token };
       webhookCache.set(channelId, webhookData);
       saveCache();
     }
 
-    // Pick a reason
-    const reason = reasons[Math.floor(Math.random() * reasons.length)];
+    const reason = pool[Math.floor(Math.random() * pool.length)];
 
-    // Choose the appropriate avatar URL
     const avatarURL = interaction.member?.avatar
       ? interaction.member.displayAvatarURL()
       : interaction.user.displayAvatarURL();
 
-    // Post as user
     await webhook.send({
       content: reason,
       username: interaction.member?.displayName || interaction.user.username,
       avatarURL
     });
 
-    // Defer and reply with modern flags usage
     await interaction.deferReply({ ephemeral: true });
-    await interaction.editReply('✅ Rejection delivered.');
+    await interaction.editReply(`✅ ${commandName.charAt(0).toUpperCase() + commandName.slice(1)} delivered.`);
 
   } catch (err) {
-    console.error(`Error handling /no in ${guild?.name || 'DMs'} / #${channel?.name || 'unknown'}:`, err);
-    await interaction.reply({ content: '❌ Could not deliver the rejection. Check bot permissions.', ephemeral: true });
+    console.error(`Error handling /${commandName} in ${guild?.name || 'DMs'} / #${channel?.name || 'unknown'}:`, err);
+    await interaction.reply({ content: '❌ Could not deliver the message. Check bot permissions.', ephemeral: true });
   }
 });
 
